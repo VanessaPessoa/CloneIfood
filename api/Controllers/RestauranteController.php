@@ -2,46 +2,40 @@
 namespace Api\Controllers;
 
 use App\Http\Controllers\Controller;
+use Api\Database\Database;
+use Api\Services\RestauranteService;
 use Illuminate\Http\Request;
 
 class RestauranteController extends Controller{
 
+    private $service; 
+
+    public function __construct(){
+       $this->service = new RestauranteService();
+    }
+
+
     public function create(Request $request){
-        $name = $request->name;
-        $email = $request->email;
-        $senha = $request->senha;
-        $hora_fechamento = $request->hora_fechamento;
-        $hora_abertura = $request->hora_abertura;
-        $telefone = $request->telefone;
-        $rua = $request->rua;
-        $estado = $request->estado;
-        $cidade = $request->cidade;
-        $pode_retirarSN = $request->pode_retirarSN;        
-        $descricao = $request->descricao;
 
-
-        if($request->has('numero')){
-            $numero = $request->numero;
-        }
-
-        if($request->has('complemento')){
-            $complemento = $request->complemento;
-        }
-        
-        if($request->has('ponto_referencia')){
-            $ponto_referencia = $request->ponto_referencia;
-        }
-
-        if($request->has('imagem')){
-            $imagem = $request->imagem;
-        }
-
+        $validatedData = $request->validate([
+            'nome' => 'required',
+            'email' => 'required',
+            'senha' => 'required',
+            'hora_fechamento' => 'required',
+            'hora_abertura' => 'required',
+            'telefone' => 'required',
+            'rua' => 'required',
+            'estado' => 'required',
+            'cidade' => 'required',
+            'pode_retirarSN' => 'required',
+            'descricao' => 'required',
+            'dias_funcionamento' => 'required'
+        ]);
 
         $body = $request->all();
 
-        return response()->json([
-            "body"=>$body
-        ]);
+        $this->service->create($body);
+
     }
 }
 
