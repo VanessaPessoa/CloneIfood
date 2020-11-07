@@ -226,7 +226,6 @@ class Database {
             $id = $last_insert[0];
             dd($id);
         }
-        
     }
 
     public function createPedidoPrato($idPedido, $idPrato, $quantidade){
