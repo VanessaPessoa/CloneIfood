@@ -25,8 +25,23 @@ Route::get('/create', function(Request $request) {
 });
 
 Route::prefix('restaurante')->group(function(){
-    Route::post('create', "RestauranteController@create");
+    Route::post('/create', "RestauranteController@create");
+    Route::post('/prato', "RestauranteController@createPrato");
+
 });
+
+Route::prefix('/cliente')->group(function(){
+    Route::post('/create', "ClienteController@create");
+    Route::post('/endereco', "ClienteController@endereco");
+});
+
+Route::prefix('pedido')->group(function(){
+    Route::post('/', "PedidoController@createPedido");
+    Route::post('/pratos', "PedidoController@pratosPedidos");
+});
+
+
+
 
 
 /*

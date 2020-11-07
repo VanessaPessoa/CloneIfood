@@ -4,17 +4,13 @@ namespace Api\Util;
 
 use Api\Abstrat\IRefactory;
 
-class UtilRefactoryRestaurante implements IRefactory{
+class UtilRefactoryCliente implements IRefactory{
 
     public function __construct(){
 
     }
 
     public function handleRefactory($data){
-        
-        if(!isset($data['imagem'])){
-           $data['imagem'] = 'null';
-        }
 
         if(!isset($data['numero'])){
            $data['numero'] = -1;
@@ -28,6 +24,9 @@ class UtilRefactoryRestaurante implements IRefactory{
             $data['ponto_referencia'] = 'null';
         }
 
+        if(!isset($data['nome_identificador'])){
+            $data['nome_identificador'] = 'null';
+        }
         return $data;
     }
 }

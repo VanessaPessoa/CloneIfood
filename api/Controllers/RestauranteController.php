@@ -29,13 +29,27 @@ class RestauranteController extends Controller{
             'cidade' => 'required',
             'pode_retirarSN' => 'required',
             'descricao' => 'required',
-            'dias_funcionamento' => 'required'
+            'dias_funcionamento' => 'required',
+            'especialidade' => 'required'
         ]);
 
         $body = $request->all();
 
         $this->service->create($body);
+        return response()->json(['success'=>true]);
+    }
 
+    public function createPrato (Request $request){
+    
+        $validatedData = $request->validate([
+            'nome' => 'required',
+            'valor' => 'required',
+            'fk_restaurante_id' => 'required'
+        ]);
+
+        $body = $request->all();
+        $this->service->createPrato($body);
+        return response()->json(['success'=>true]);
     }
 }
 
