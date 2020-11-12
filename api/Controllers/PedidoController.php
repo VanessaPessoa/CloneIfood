@@ -18,19 +18,11 @@ class PedidoController extends Controller{
         $validatedData = $request->validate([
             'hora_pedido' => 'required',
             'valor' => 'required',
-            'fk_cliente_id' => 'required'
+            'fk_cliente_id' => 'required',
         ]);
         $body = $request->all();
         $this->service->createPedido($body);
-        return response()->json(['success'=>true]);
-    }
-
-    public function pratosPedidos(Request $request){
-        $validatedData = $request->validate([
-            'fk_pedido_id' => 'required'
-        ]);
-        $body = $request->all();
-        $this->service->pratosPedidos($body);
+        return response()->json(['success'=>true, "data" => $body]);
     }
 }
 

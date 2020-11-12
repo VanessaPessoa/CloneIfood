@@ -37,7 +37,6 @@ Route::prefix('/cliente')->group(function(){
 
 Route::prefix('pedido')->group(function(){
     Route::post('/', "PedidoController@createPedido");
-    Route::post('/pratos', "PedidoController@pratosPedidos");
 });
 
 

@@ -221,10 +221,18 @@ class Database {
             $data['fk_cliente_id']
         ]);       
         
+        $insert = [
+            "hora_pedido" => $data['hora_pedido'],
+            "valor" => $data['valor'],
+            "fk_cliente_id" => $data['fk_cliente_id'],
+        ];
+
+
+        // dd($insert);
         if($db){
-            $last_insert = DB::select('SELECT LAST_INSERT_ID()');
-            $id = $last_insert[0];
-            dd($id);
+            $last_id = DB::table('pedido')
+            ->insertGetId($insert);
+            return ($last_id);
         }
     }
 

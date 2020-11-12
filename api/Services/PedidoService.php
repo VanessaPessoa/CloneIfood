@@ -11,14 +11,11 @@ class PedidoService{
    }
 
    public function createPedido($data){
-        $this->db->createPedido($data); 
-        
-   }
+        $idPedido =  $this->db->createPedido($data);  
 
-   public function pratosPedidos($data){
         foreach ($data['pratos'] as $prato){
-          $this->db->createPedidoPrato($data['fk_pedido_id'], $prato['id'], $prato['quantidade']);
-        }
+            $this->db->createPedidoPrato($idPedido, $prato['id'], $prato['quantidade']);
+        }      
    }
 }
 
