@@ -22,10 +22,10 @@ class ClienteController extends Controller{
             'telefone' => 'required',
             'nome' => 'required'
         ]);
+         
         $body = $request->all();
-        $this->service->create($body);
-        return response()->json(['success'=>true]);
-
+        $id = $this->service->create($body);
+        return response()->json(['success'=>true, 'id'=>$id]);
     }
 
     public function endereco(Request $request){
@@ -39,9 +39,32 @@ class ClienteController extends Controller{
 
         $body = $request->all();
 
-        $this->service->endereco($body);
-        return response()->json(['success'=>true]);
+        $id = $this->service->endereco($body);
+        return response()->json(['success'=>true, 'id'=>$id]);
 
+    }
+
+    public function login(Request $request){      
+        $validatedData = $request->validate([
+            'email' => 'required',
+            'senha' => 'required',
+        ]);
+
+        $body = $request->all();
+        $id = $this->service->autenticacao($body);
+        return response()->json(['success'=>true, 'id'=>$id]);
+    }
+
+    public function getAll(){
+        $data =  $this->service->getAll();
+        
+        return response()->json(['success'=>true, 'data'=>$data]);
+    }
+
+    public function getCliente($id){
+        $data = $this->service->getCliente($id);
+
+        return response()->json(['success'=>true, 'data'=>$data]);
     }
 }
 

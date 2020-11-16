@@ -27,12 +27,21 @@ Route::get('/create', function(Request $request) {
 Route::prefix('restaurante')->group(function(){
     Route::post('/create', "RestauranteController@create");
     Route::post('/prato', "RestauranteController@createPrato");
+    Route::post('/', "RestauranteController@login");
 
+    Route::get('/', "RestauranteController@getAll");
+    Route::get('/{id}', "RestauranteController@getRestaurante");
 });
+
 
 Route::prefix('/cliente')->group(function(){
     Route::post('/create', "ClienteController@create");
     Route::post('/endereco', "ClienteController@endereco");
+    Route::post('/', "ClienteController@login");
+
+    Route::get('/', "ClienteController@getAll");
+    Route::get('/{id}', "ClienteController@getCliente");
+
 });
 
 Route::prefix('pedido')->group(function(){

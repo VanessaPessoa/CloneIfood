@@ -35,8 +35,8 @@ class RestauranteController extends Controller{
 
         $body = $request->all();
 
-        $this->service->create($body);
-        return response()->json(['success'=>true]);
+        $id = $this->service->create($body);
+        return response()->json(['success'=>true, 'id'=>$id]);
     }
 
     public function createPrato (Request $request){
@@ -48,9 +48,34 @@ class RestauranteController extends Controller{
         ]);
 
         $body = $request->all();
-        $this->service->createPrato($body);
-        return response()->json(['success'=>true]);
+        $id = $this->service->createPrato($body);
+        return response()->json(['success'=>true, 'id'=>$id]);
     }
+
+    public function login(Request $request){   
+        $validatedData = $request->validate([
+            'email' => 'required',
+            'senha' => 'required',
+        ]);
+        
+        $body = $request->all();
+        $id = $this->service->autenticacao($body);
+        return response()->json(['success'=>true, 'id'=>$id]);
+    }
+
+
+    public function getAll(){
+        $data =  $this->service->getAll();
+        
+        return response()->json(['success'=>true, 'data'=>$data]);
+    }
+
+    public function getRestaurante($id){
+        $data = $this->service->getRestaurante($id);
+
+        return response()->json(['success'=>true, 'data'=>$data]);
+    }
+
 }
 
 ?>
