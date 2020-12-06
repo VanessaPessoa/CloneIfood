@@ -13,11 +13,11 @@ class UtilRefactoryPrato implements IRefactory{
     public function handleRefactory($data){
 
         if(!isset($data['imagem'])){
-           $data['imagem'] = "null";
+           $data['imagem'] = null;
         }
 
         if(!isset($data['descricao'])){
-            $data['descricao'] = 'null';
+            $data['descricao'] = null;
         }
         
         return $data;

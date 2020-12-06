@@ -45,6 +45,26 @@ class PedidoController extends Controller{
         }
     }
 
+    public function historicoRestauranteMes($id){
+        $data =  $this->service->historicoRestauranteMes($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data]);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
+    public function historicoRestauranteSemana($id){
+        $data =  $this->service->historicoRestauranteSemana($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data]);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
     public function getPedido($id){
         $data =  $this->service->getPedido($id);
         

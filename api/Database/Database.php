@@ -21,8 +21,11 @@ class Database {
         return $instance;
     }
 
+
     private function createBase(){
-        DB::statement("CREATE TABLE IF NOT EXISTS cliente (
+        
+        // Criando as tabelas
+       DB::statement("CREATE TABLE IF NOT EXISTS cliente (
             senha VARCHAR(10) NOT NULL,
             id VARCHAR(36) PRIMARY KEY,
             nomeCliente VARCHAR(30) NOT NULL,
@@ -33,11 +36,10 @@ class Database {
         DB::statement("CREATE TABLE IF NOT EXISTS restaurante(
             id VARCHAR(36) PRIMARY KEY,
             nome VARCHAR(30) NOT NULL,
-            nomeRestaurante VARCHAR(30) NOT NULL,
+            nomeRestaurante VARCHAR(30) NOT NULL UNIQUE,
             hora_fechamento VARCHAR(5) NOT NULL,
             hora_abertura VARCHAR(5) NOT NULL, 
             descricao TEXT NOT NULL,
-            dias_funcionamento VARCHAR(20) NOT NULL,
             telefone VARCHAR(11) NOT NULL,
             email VARCHAR(50) NOT NULL UNIQUE,
             senha VARCHAR(10) NOT NULL,
@@ -82,6 +84,7 @@ class Database {
             ponto_referencia VARCHAR(100),
             estado CHAR(2) NOT NULL,
             cidade VARCHAR(100) NOT NULL,
+            ativo INT NOT NULL,
             nome_identificador VARCHAR(40),
             fk_cliente_id VARCHAR(36) NOT NULL,
             FOREIGN KEY(fk_cliente_id)
@@ -90,7 +93,7 @@ class Database {
 
         DB::statement("CREATE TABLE IF NOT EXISTS pedido(
             id VARCHAR(36) PRIMARY KEY,
-            hora_pedido VARCHAR(5) NOT NULL,
+            dia_hora_pedido DATETIME NOT NULL,
             valor float(10,2) NOT NULL,
             fk_enderecocliente_id VARCHAR(36) NOT NULL,
             FOREIGN KEY(fk_enderecocliente_id)
@@ -120,6 +123,7 @@ class Database {
                 REFERENCES prato (id)
         )");
     }
+
 
     public function createRestaurante($data, $id, $imagem){
 
@@ -167,6 +171,7 @@ class Database {
         );
     }
 
+
     public function createCliente($data, $id){
 
         DB::insert('INSERT INTO cliente (
@@ -187,6 +192,7 @@ class Database {
         );
     }
 
+    
     public function createEnderecoCliente($data, $id){
 
         DB::insert('INSERT INTO enderecoCliente (
@@ -198,9 +204,10 @@ class Database {
             cidade,
             nome_identificador,
             fk_cliente_id,
-            id
+            id,
+            ativo
         ) 
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ? )',
         [
             $data['rua'],
             $data['numero'],
@@ -210,9 +217,11 @@ class Database {
             $data['cidade'],
             $data['nome_identificador'],
             $data['fk_cliente_id'],
-            $id
+            $id,
+            1
         ]);
     }
+
 
     public function createPrato($data, $id, $imagem){
 
@@ -238,22 +247,24 @@ class Database {
     );
     }
 
-    public function createPedido($data, $id){
+
+    public function createPedido($data, $id, $datePedido){
         
        $db = DB::insert('INSERT INTO pedido (
-            hora_pedido,
+            dia_hora_pedido,
             valor,
             fk_enderecocliente_id,
             id
         )
         VALUES(?, ?, ?, ?)',
         [
-            $data['hora_pedido'],
+            $datePedido,
             $data['valor'],
             $data['fk_enderecocliente_id'],
             $id
         ]);       
     }
+
 
     public function createPedidoPrato($idPedido, $idPrato, $quantidade, $id){
    
@@ -272,12 +283,14 @@ class Database {
         ]);
     }   
 
+
     public function getCliente($id){
         
         $results = DB::select( DB::raw("SELECT * FROM cliente WHERE id = '$id'") );
 
         return $results;
     }
+
 
     public function getClienteAll(){
         $results = DB::select( DB::raw("SELECT * FROM cliente") );
@@ -286,12 +299,14 @@ class Database {
         return $results;
     }
 
+
     public function getRestaurante($id){
         
         $results = DB::select( DB::raw("SELECT * FROM restaurante WHERE id = '$id'") );
 
         return $results;
     }
+
 
     public function getRestauranteAll(){
         
@@ -300,12 +315,14 @@ class Database {
         return $results;
     }
 
+
     public function getPrato($id){
         
         $results = DB::select( DB::raw("SELECT * FROM prato INNER JOIN restaurante  ON prato.fk_restaurante_id = restaurante.id WHERE prato.id= '$id' AND prato.ativo = 1") );
 
         return $results;
     }
+
 
     public function getPratoAll($id){
         
@@ -314,16 +331,29 @@ class Database {
         return $results;
     }
 
+
     public function getEndereco($id){
         
-        $results = DB::select(DB::raw("SELECT * FROM enderecocliente INNER JOIN cliente  ON enderecocliente.fk_cliente_id = cliente.id WHERE enderecocliente.id='$id' "));
+        $results = DB::select(
+            DB::raw(
+                "SELECT cliente.nomeCliente, cliente.telefone,
+                        E.nome_identificador ,E.rua, E.numero, E.complemento, E.ponto_referencia, E.cidade, E.estado 
+                FROM enderecocliente E 
+                INNER JOIN cliente  ON E.fk_cliente_id = cliente.id WHERE E.id='$id' AND ativo = 1
+        "));
 
         return $results;
     }    
 
     public function getEnderecoAll($id){
         
-        $results = DB::select(DB::raw("SELECT * FROM enderecocliente INNER JOIN cliente  ON enderecocliente.fk_cliente_id = cliente.id WHERE cliente.id='$id' "));
+        $results = DB::select(
+            DB::raw(
+                "SELECT cliente.nomeCliente, cliente.telefone,
+                        E.nome_identificador ,E.rua, E.numero, E.complemento, E.ponto_referencia, E.cidade, E.estado 
+                FROM enderecocliente E
+                INNER JOIN cliente  ON E.fk_cliente_id = cliente.id WHERE cliente.id='$id' AND ativo = 1 "
+        ));
 
         return $results;
     }
@@ -336,7 +366,7 @@ class Database {
     }
 
     public function autenticacaoRestaurante($email, $senha){
-        
+
         $results = DB::select( DB::raw("SELECT * FROM restaurante WHERE email = '$email' AND senha = '$senha' ") );
 
         return $results;
@@ -346,7 +376,7 @@ class Database {
         
         $results = DB::select(
             DB::raw("
-                SELECT  pedido.id, pedido.valor, pedido.hora_pedido, 
+                SELECT  pedido.id, pedido.valor, pedido.dia_hora_pedido, 
                 C.nomeCliente, C.telefone, C.email,
                 E.rua, E.numero, E.complemento, E.ponto_referencia,
                 prato.nome, prato.descricao, prato.imagem, prato.valor
@@ -356,6 +386,61 @@ class Database {
                 JOIN pedido_prato PP ON PP.fk_pedido_id = pedido.id
                 JOIN prato ON PP.fk_prato_id = prato.id
                 WHERE prato.fk_restaurante_id = '$id'
+                ORDER BY pedido.dia_hora_pedido ASC
+            ")
+        );
+        
+        return $results;
+    }
+
+    public function historicoRestauranteMes($id){
+
+        date_default_timezone_set('America/Recife');
+        
+        $lastMonth = date('Y-m-d H:i:s', (time() - (30 * 24 * 60 * 60)));
+        $today = date('Y-m-d H:i:s', time());
+
+        $results = DB::select(
+            DB::raw("
+                SELECT  pedido.id, pedido.valor, pedido.dia_hora_pedido, 
+                C.nomeCliente, C.telefone, C.email,
+                E.rua, E.numero, E.complemento, E.ponto_referencia,
+                prato.nome, prato.descricao, prato.imagem, prato.valor
+                FROM cliente C
+                JOIN enderecocliente E ON E.fk_cliente_id = C.id
+                JOIN pedido ON pedido.fk_enderecocliente_id = E.id
+                JOIN pedido_prato PP ON PP.fk_pedido_id = pedido.id
+                JOIN prato ON PP.fk_prato_id = prato.id
+                WHERE prato.fk_restaurante_id = '$id' 
+                AND pedido.dia_hora_pedido BETWEEN '$lastMonth' AND '$today' 
+                ORDER BY pedido.dia_hora_pedido ASC
+            ")
+        );
+        
+        return $results;
+    }
+
+    public function historicoRestauranteSemana($id){
+
+        date_default_timezone_set('America/Recife');
+        
+        $lastweek = date('Y-m-d H:i:s', (time() - (7 * 24 * 60 * 60)));
+        $today = date('Y-m-d H:i:s', time());
+
+        $results = DB::select(
+            DB::raw("
+                SELECT  pedido.id, pedido.valor, pedido.dia_hora_pedido, 
+                C.nomeCliente, C.telefone, C.email,
+                E.rua, E.numero, E.complemento, E.ponto_referencia,
+                prato.nome, prato.descricao, prato.imagem, prato.valor
+                FROM cliente C
+                JOIN enderecocliente E ON E.fk_cliente_id = C.id
+                JOIN pedido ON pedido.fk_enderecocliente_id = E.id
+                JOIN pedido_prato PP ON PP.fk_pedido_id = pedido.id
+                JOIN prato ON PP.fk_prato_id = prato.id
+                WHERE prato.fk_restaurante_id = '$id' 
+                AND pedido.dia_hora_pedido BETWEEN '$lastweek' AND '$today' 
+                ORDER BY pedido.dia_hora_pedido ASC
             ")
         );
         
@@ -366,18 +451,18 @@ class Database {
         
         $results = DB::select(
             DB::raw("
-            SELECT  pedido.id, pedido.valor, pedido.hora_pedido, 
-            C.nomeCliente, C.telefone, C.email,
-            E.rua, E.numero, E.complemento, E.ponto_referencia,
-            prato.nome, prato.descricao, prato.imagem, prato.valor,
-            R.nomeRestaurante
-            FROM cliente C
-            JOIN enderecocliente E ON E.fk_cliente_id = C.id
-            JOIN pedido ON pedido.fk_enderecocliente_id = E.id
-            JOIN pedido_prato PP ON PP.fk_pedido_id = pedido.id
-            JOIN prato ON PP.fk_prato_id = prato.id
-            JOIN restaurante R ON R.id =  prato.fk_restaurante_id
-            WHERE pedido.id = '$id';
+                SELECT  pedido.id, pedido.valor, pedido.dia_hora_pedido, 
+                C.nomeCliente, C.telefone, C.email,
+                E.rua, E.numero, E.complemento,E.ponto_referencia,
+                prato.nome, prato.descricao, prato.imagem, prato.valor,
+                R.nomeRestaurante
+                FROM cliente C
+                JOIN enderecocliente E ON E.fk_cliente_id = C.id
+                JOIN pedido ON pedido.fk_enderecocliente_id = E.id
+                JOIN pedido_prato PP ON PP.fk_pedido_id = pedido.id
+                JOIN prato ON PP.fk_prato_id = prato.id
+                JOIN restaurante R ON R.id =  prato.fk_restaurante_id
+                WHERE pedido.id = '$id';
             ")
         );
 
@@ -388,7 +473,7 @@ class Database {
         
         $results = DB::select(
             DB::raw("
-            SELECT  pedido.id, pedido.valor, pedido.hora_pedido, 
+            SELECT  pedido.id, pedido.valor, pedido.dia_hora_pedido, 
             C.nomeCliente, C.telefone, C.email,
             E.rua, E.numero, E.complemento, E.ponto_referencia,
             prato.nome, prato.descricao, prato.imagem, prato.valor,
@@ -400,6 +485,7 @@ class Database {
             JOIN prato ON PP.fk_prato_id = prato.id
             JOIN restaurante R ON R.id =  prato.fk_restaurante_id
             WHERE C.id = '$id'
+            ORDER BY pedido.dia_hora_pedido ASC
             ;
             ")
         );
@@ -409,7 +495,7 @@ class Database {
 
     public function deleteEndereco($id){
        
-        $results = DB::delete(DB::raw("DELETE FROM enderecocliente WHERE id = '$id'"));
+        $results = DB::update(DB::raw("UPDATE enderecoCliente SET ativo = 0 WHERE id = '$id'"));
 
         return $results;
     }
@@ -442,7 +528,7 @@ class Database {
         return $results;
     }
 
-    public function ruaCliente($id, $rua){
+    public function updateRuaCliente($id, $rua){
         
         $results = DB::update(
            DB::raw( 
@@ -452,7 +538,7 @@ class Database {
         return $results;
     }
     
-    public function numeroCliente($id, $numero){
+    public function updateNumeroCliente($id, $numero){
         
         $results = DB::update(
            DB::raw( 
@@ -462,7 +548,7 @@ class Database {
         return $results;
     }
 
-    public function complementoCliente($id, $complemento){
+    public function updateComplementoCliente($id, $complemento){
         
         $results = DB::update(
            DB::raw( 
@@ -472,7 +558,7 @@ class Database {
         return $results;
     }
 
-    public function pontoReferenciaCliente($id, $ponto_referencia){
+    public function updatePontoReferenciaCliente($id, $ponto_referencia){
         
         $results = DB::update(
            DB::raw( 
@@ -482,7 +568,7 @@ class Database {
         return $results;
     }
 
-    public function cidadeCliente($id, $cidade){
+    public function updateCidadeCliente($id, $cidade){
         
         $results = DB::update(
            DB::raw( 
@@ -492,7 +578,7 @@ class Database {
         return $results;
     }
 
-    public function estadoCliente($id, $estado){
+    public function updateEstadoCliente($id, $estado){
         
         $results = DB::update(
            DB::raw( 
@@ -502,7 +588,7 @@ class Database {
         return $results;
     }
 
-    public function nomeIdentificadorCliente($id, $nome_identificador){
+    public function updateNomeIdentificadorEndereco($id, $nome_identificador){
         
         $results = DB::update(
            DB::raw( 
@@ -511,7 +597,162 @@ class Database {
         
         return $results;
     }
-   
 
+    public function updateDescricaoPrato($id, $descricao){
+       
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE prato SET descricao = '$descricao' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateValorPrato($id, $valor){
+     
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE prato SET valor = '$valor' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+   
+    public function updateImagemPrato($id, $imagem){
+       
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE prato SET imagem = '$imagem' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateImagemRestaurante($id, $imagem){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET imagem = '$imagem' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+    
+    public function updateHoraAberturaRestaurante($id, $hora_abertura){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET hora_abertura = '$hora_abertura' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateHoraFechamentoRestaurante($id, $hora_abertura){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET hora_abertura = '$hora_abertura' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateDescricaoRestaurante($id, $descricao){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET descricao = '$descricao' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateTelefoneRestaurante($id, $telefone){
+     
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET telefone = '$telefone' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateRuaRestaurante($id, $rua){
+     
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET rua = '$rua' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateNumeroRestaurante($id, $numero){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET numero = '$numero' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateComplementoRestaurante($id, $complemento){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET complemento = '$complemento' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updatePontoReferenciaRestaurante($id, $ponto_referencia){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET ponto_referencia = '$ponto_referencia' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateCidadeRestaurante($id, $cidade){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET cidade = '$cidade' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateEstadoRestaurante($id, $estado){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET estado = '$estado' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function updateEspecialidadeRestaurante($id, $especialidade){
+      
+        $results = DB::update(
+            DB::raw( 
+                 "UPDATE restaurante SET especialidade = '$especialidade' WHERE id = '$id'"            
+         ));
+         
+         return $results;
+    }
+
+    public function pratoPromocao(){
+
+        $results = DB::select( DB::raw("SELECT * FROM prato WHERE valor BETWEEN 0 AND 10"));
+
+        return $results;
+    }
 }
 ?>

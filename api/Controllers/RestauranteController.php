@@ -77,6 +77,7 @@ class RestauranteController extends Controller{
             $insert['imagem'] = 'http://127.0.0.1:8000/'.$destinationPath.$profileImage;
         }
 
+
         $body = $request->all();
         $id = $this->service->createPrato($body, $insert['imagem']);
 
@@ -158,6 +159,52 @@ class RestauranteController extends Controller{
 
     }
 
+
+    public function updatePrato (Request $request, $id){
+
+        $imagem = null;
+        if ($file = $request->file('imagem')) {
+            $destinationPath = 'public/imagem/'; // upload path
+            $profileImage = date('YmdHis') . "." . $file->getClientOriginalExtension();
+            $file->move($destinationPath, $profileImage);
+            $insert['imagem'] = 'http://127.0.0.1:8000/'.$destinationPath.$profileImage;
+            $imagem = $insert['imagem'];
+        }
+
+        $body = $request->all();
+        $this->service->updatePrato($id, $body, $imagem);
+
+        return response()->json(['success'=>true],  200);
+    }
+
+
+    public function updateRestaurante (Request $request, $id){
+
+        $imagem = null;
+        if ($file = $request->file('imagem')) {
+            $destinationPath = 'public/imagem/'; // upload path
+            $profileImage = date('YmdHis') . "." . $file->getClientOriginalExtension();
+            $file->move($destinationPath, $profileImage);
+            $insert['imagem'] = 'http://127.0.0.1:8000/'.$destinationPath.$profileImage;
+            $imagem = $insert['imagem'];
+        }
+
+        $body = $request->all();
+        $this->service->updateRestaurante($id, $body, $imagem);
+
+        return response()->json(['success'=>true],  200);
+    }
+
+    public function getPratoPromocao(){
+
+        $data = $this->service->getPratoPromocao();
+
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data],  200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
 }
 
 ?>

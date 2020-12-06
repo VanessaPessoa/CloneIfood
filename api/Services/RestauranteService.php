@@ -68,6 +68,80 @@ class RestauranteService{
         
         return $db;
     }
+
+    public function updatePrato($id, $data, $imagem){
+        
+        if($imagem){
+            $this->db->updateImagemPrato($id, $imagem);
+        }
+        
+        if(isset($data['descricao'])){
+            $this->db->updateDescricaoPrato($id, $data['descricao']);
+        }
+
+        if(isset($data['valor'])){
+            $this->db->updateValorPrato($id, $data['valor']);
+        }
+        
+    }
+
+    public function updateRestaurante($id, $data, $imagem){
+        
+        if($imagem){
+            $this->db->updateImagemRestaurante($id, $imagem);
+        }
+        
+        if(isset($data['hora_fechamento'])){
+            $this->db->updateHoraFechamentoRestaurante($id, $data['hora_fechamento']);
+        }
+
+        if(isset($data['hora_abertura'])){
+            $this->db->updateHoraAberturaRestaurante($id, $data['hora_abertura']);
+        }
+
+        if(isset($data['telefone'])){
+            $this->db->updateTelefoneRestaurante($id, $data['telefone']);
+        }
+
+        if(isset($data['rua'])){
+            $this->db->updateRuaRestaurante($id, $data['rua']);
+        }
+
+        if(isset($data['numero'])){
+            $this->db->updateNumeroRestaurante($id, $data['numero']);
+        }
+
+        if(isset($data['complemento'])){
+            $this->db->updateComplementoRestaurante($id, $data['complemento']);
+        }
+
+        if(isset($data['ponto_referencia'])){
+            $this->db->updatePontoReferenciaRestaurante($id, $data['ponto_referencia']);
+        }
+
+        if(isset($data['estado'])){
+            $this->db->updateEstadoRestaurante($id, $data['estado']);
+        }
+
+        if(isset($data['cidade'])){
+            $this->db->updateCidadeRestaurante($id, $data['cidade']);
+        }
+
+        if(isset($data['especialidade'])){
+            $this->db->updateEspecialidadeRestaurante($id, $data['especialidade']);
+        }
+
+        if(isset($data['descricao'])){
+            $this->db->updateDescricaoRestaurante($id, $data['descricao']);
+        }
+        
+    }
+
+    public function getPratoPromocao(){
+        $db = $this->db->pratoPromocao();
+
+        return $db;
+    }
 }
 
 ?>

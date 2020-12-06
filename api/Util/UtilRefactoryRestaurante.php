@@ -13,19 +13,19 @@ class UtilRefactoryRestaurante implements IRefactory{
     public function handleRefactory($data){
         
         if(!isset($data['imagem'])){
-           $data['imagem'] = 'null';
+           $data['imagem'] = null;
         }
 
         if(!isset($data['numero'])){
-           $data['numero'] = -1;
+           $data['numero'] = null;
         }
 
         if(!isset($data['complemento'])){
-            $data['complemento'] = 'null';
+            $data['complemento'] = null;
         }
 
         if(!isset($data['ponto_referencia'])){
-            $data['ponto_referencia'] = 'null';
+            $data['ponto_referencia'] = null;
         }
 
         return $data;

@@ -122,16 +122,20 @@ class ClienteController extends Controller{
     }
 
     public function updateCliente(Request $request, $id){      
-
+      
         $body = $request->all();
         $data = $this->service->updateCliente($id, $body);
+        
+        return response()->json(['success'=>true], 200);            
+      
+    }
 
-        dd($data);
-        if($data){
-            return response()->json(['success'=>true, 'data'=>$data, 'role' => 'cliente'], 200);            
-        }else{
-            return response()->json(['success'=>false], 401);            
-        }
+    public function updateEndereco(Request $request, $id){
+        
+        $body = $request->all();
+        $data = $this->service->updateEndereco($id, $body);
+
+        return response()->json(['success'=>true], 200);  
     }
 
 

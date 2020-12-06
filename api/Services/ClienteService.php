@@ -69,9 +69,47 @@ class ClienteService{
     }
 
     public function updateCliente($id, $data){
-        $db = $this->db->updateCliente($id, $data['nomeCliente']);
         
-        return $db;
+        if(isset($data['nomeCliente'])){
+            $this->db->updateNomeCliente($id, $data['nomeCliente']);
+        }
+        
+        if(isset($data['telefone'])){
+            $this->db->updateTelefoneCliente($id, $data['telefone']);
+        }
+        
+    }
+
+    public function updateEndereco($id, $data){
+        
+        if(isset($data['rua'])){
+            $this->db->updateRuaCliente($id, $data['rua']);
+        }
+        
+        if(isset($data['numero'])){
+            $this->db->updateNumeroCliente($id, $data['numero']);
+        }
+
+        if(isset($data['complemento'])){
+            $this->db->updateComplementoCliente($id, $data['complemento']);
+        }
+        
+        if(isset($data['ponto_referencia'])){
+            $this->db->updatePontoReferenciaCliente($id, $data['ponto_referencia']);
+        }
+
+        if(isset($data['cidade'])){
+            $this->db->updateCidadeCliente($id, $data['cidade']);
+        }
+        
+        if(isset($data['estado'])){
+            $this->db->updateEstadoCliente($id, $data['estado']);
+        }
+
+        if(isset($data['nome_identificador'])){
+            $this->db->updateNomeIdentificadorEndereco($id, $data['nome_identificador']);
+        }
+        
     }
     
 }

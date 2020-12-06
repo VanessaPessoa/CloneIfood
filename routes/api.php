@@ -28,11 +28,15 @@ Route::prefix('restaurante')->group(function(){
     Route::post('/create', "RestauranteController@create");
     Route::post('/prato', "RestauranteController@createPrato");
     Route::post('/', "RestauranteController@login");
+    Route::post('/prato/{id}', "RestauranteController@updatePrato");
+    Route::post('/{id}', "RestauranteController@updateRestaurante");
 
     Route::get('/', "RestauranteController@getAll");
+    Route::get('/prato/promocao', "RestauranteController@getPratoPromocao");
     Route::get('/{id}', "RestauranteController@getRestaurante");
     Route::get('/pratos/{id}', "RestauranteController@getPratoAll");
     Route::get('/prato/{id}', "RestauranteController@getPrato");
+
 
     Route::delete('/prato/{id}', "RestauranteController@deletePrato");
 
@@ -53,15 +57,20 @@ Route::prefix('/cliente')->group(function(){
     Route::delete('/endereco/{id}', "ClienteController@deleteEndereco");
 
     Route::put('/{id}', "ClienteController@updateCliente");
+    Route::put('/endereco/{id}', "ClienteController@updateEndereco");
+
 });
 
-Route::get('/pedido/{id}', "PedidoController@getPedido");
 
-Route::prefix('pedido')->group(function(){
+Route::prefix('/pedido')->group(function(){
     Route::post('/', "PedidoController@createPedido");
     
     Route::get('/historicoCliente/{id}', "PedidoController@historicoCliente");
     Route::get('/historicoRestaurante/{id}', "PedidoController@historicoRestaurante");
+    Route::get('/historicoRestauranteMes/{id}', "PedidoController@historicoRestauranteMes");
+    Route::get('/historicoRestauranteSemana/{id}', "PedidoController@historicoRestauranteSemana");
+
+    Route::get('/{id}', "PedidoController@getPedido");
 
 });
 
