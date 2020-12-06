@@ -18,11 +18,41 @@ class PedidoController extends Controller{
         $validatedData = $request->validate([
             'hora_pedido' => 'required',
             'valor' => 'required',
-            'fk_cliente_id' => 'required',
+            'fk_enderecocliente_id' => 'required',
         ]);
         $body = $request->all();
         $this->service->createPedido($body);
         return response()->json(['success'=>true, "data" => $body]);
+    }
+
+    public function historicoCliente($id){
+        $data =  $this->service->historicoCliente($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data]);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
+    public function historicoRestaurante($id){
+        $data =  $this->service->historicoRestaurante($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data]);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
+    public function getPedido($id){
+        $data =  $this->service->getPedido($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data]);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
     }
 }
 

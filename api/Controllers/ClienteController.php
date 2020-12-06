@@ -16,16 +16,21 @@ class ClienteController extends Controller{
 
 
     public function create(Request $request){
+
         $validatedData = $request->validate([
             'email' => 'required',
             'senha' => 'required',
             'telefone' => 'required',
-            'nome' => 'required'
+            'nomeCliente' => 'required'
         ]);
          
         $body = $request->all();
         $id = $this->service->create($body);
-        return response()->json(['success'=>true, 'id'=>$id]);
+        if($id){
+            return response()->json(['success'=>true, 'id'=>$id], 200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
     }
 
     public function endereco(Request $request){
@@ -40,7 +45,12 @@ class ClienteController extends Controller{
         $body = $request->all();
 
         $id = $this->service->endereco($body);
-        return response()->json(['success'=>true, 'id'=>$id]);
+
+        if($id){
+            return response()->json(['success'=>true, 'id'=>$id], 200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
 
     }
 
@@ -52,20 +62,79 @@ class ClienteController extends Controller{
 
         $body = $request->all();
         $id = $this->service->autenticacao($body);
-        return response()->json(['success'=>true, 'id'=>$id]);
+
+        if($id){
+            return response()->json(['success'=>true, 'data'=>$id, 'role' => 'cliente'], 200);            
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
     }
 
     public function getAll(){
         $data =  $this->service->getAll();
-        
-        return response()->json(['success'=>true, 'data'=>$data]);
+
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data], 200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
     }
 
     public function getCliente($id){
         $data = $this->service->getCliente($id);
-
-        return response()->json(['success'=>true, 'data'=>$data]);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data], 200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
     }
+
+    public function getEndereco($id){
+        $data = $this->service->getEndereco($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data], 200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
+    public function getEnderecoAll($id){
+        $data = $this->service->getEnderecoAll($id);
+        
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data], 200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
+    public function deleteEndereco($id){
+        $data = $this->service->deleteEndereco($id);
+        
+        if($data){
+            return response()->json(['success'=>true],  200);
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+
+    }
+
+    public function updateCliente(Request $request, $id){      
+
+        $body = $request->all();
+        $data = $this->service->updateCliente($id, $body);
+
+        dd($data);
+        if($data){
+            return response()->json(['success'=>true, 'data'=>$data, 'role' => 'cliente'], 200);            
+        }else{
+            return response()->json(['success'=>false], 401);            
+        }
+    }
+
+
 }
 
 ?>

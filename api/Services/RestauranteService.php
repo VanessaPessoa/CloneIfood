@@ -20,18 +20,18 @@ class RestauranteService{
 
     }
 
-    public function create($data){
+    public function create($data, $imagem){
         $id = $this->idGenerate->generatedId();
         $body = $this->util->handleRefactory($data);
-        $db = $this->db->createRestaurante($body, $id); 
+        $db = $this->db->createRestaurante($body, $id, $imagem); 
         
         return $id;
     }
 
-    public function createPrato($data){
+    public function createPrato($data, $imagem){
         $id = $this->idGenerate->generatedId();
         $body = $this->util_prato->handleRefactory($data);
-        $db = $this->db->createPrato($body, $id);
+        $db = $this->db->createPrato($body, $id, $imagem);
 
         return $id;
     }
@@ -50,6 +50,22 @@ class RestauranteService{
     public function getRestaurante($id){
         $db = $this->db->getRestaurante($id);
 
+        return $db;
+    }
+
+    public function getPratoAll($id){
+        $db = $this->db->getPratoAll($id);
+        return $db;
+    }
+
+    public function getPrato($id){
+        $db = $this->db->getPrato($id);
+        return $db;
+    }
+
+    public function deletePrato($id){
+        $db = $this->db->deletePrato($id);
+        
         return $db;
     }
 }

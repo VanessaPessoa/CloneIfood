@@ -31,6 +31,12 @@ Route::prefix('restaurante')->group(function(){
 
     Route::get('/', "RestauranteController@getAll");
     Route::get('/{id}', "RestauranteController@getRestaurante");
+    Route::get('/pratos/{id}', "RestauranteController@getPratoAll");
+    Route::get('/prato/{id}', "RestauranteController@getPrato");
+
+    Route::delete('/prato/{id}', "RestauranteController@deletePrato");
+
+
 });
 
 
@@ -41,41 +47,22 @@ Route::prefix('/cliente')->group(function(){
 
     Route::get('/', "ClienteController@getAll");
     Route::get('/{id}', "ClienteController@getCliente");
+    Route::get('/endereco/{id}', "ClienteController@getEndereco");
+    Route::get('/enderecos/{id}', "ClienteController@getEnderecoAll");
 
+    Route::delete('/endereco/{id}', "ClienteController@deleteEndereco");
+
+    Route::put('/{id}', "ClienteController@updateCliente");
 });
+
+Route::get('/pedido/{id}', "PedidoController@getPedido");
 
 Route::prefix('pedido')->group(function(){
     Route::post('/', "PedidoController@createPedido");
+    
+    Route::get('/historicoCliente/{id}', "PedidoController@historicoCliente");
+    Route::get('/historicoRestaurante/{id}', "PedidoController@historicoRestaurante");
+
 });
-
-
-
-
-
-/*
-/****** Routes cliente******
-/ Autenticaçao
-/ lista de restaurantes -
-/ lista pratos do restaurante
-/ lista dados restaurante
-/   
-/ lista dos pedidos
-/ fazer pedido
-/ editar perfil
-/ cadastrar endereco
-/ lista enderecos
-/ editar endereco
-/ deleta endereco
-/
-/
-/****** Restaurante ********
-/ autenticacao
-/ lista dos pedidos
-/ lista dos  seus pratos
-/ cria prato
-/ edita prato
-/ edita perfil
-/ deleta prato
-*/
 
 ?>

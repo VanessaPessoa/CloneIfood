@@ -33,7 +33,6 @@ class ClienteService{
 
     public function autenticacao($data){
        $db = $this->db->autenticacaoCliente($data['email'], $data['senha']);
-      
        return $db;
     }
 
@@ -48,6 +47,33 @@ class ClienteService{
 
         return $db;
     }
+
+    public function getEnderecoAll($id){
+        
+        $db = $this->db->getEnderecoAll($id);
+        
+        return $db;
+    }
+
+    public function getEndereco($id){
+        
+        $db = $this->db->getEndereco($id);
+        
+        return $db;
+    }
+
+    public function deleteEndereco($id){
+        $db = $this->db->deleteEndereco($id);
+        
+        return $db;
+    }
+
+    public function updateCliente($id, $data){
+        $db = $this->db->updateCliente($id, $data['nomeCliente']);
+        
+        return $db;
+    }
+    
 }
 
 ?>
