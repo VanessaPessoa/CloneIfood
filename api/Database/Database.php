@@ -133,7 +133,6 @@ class Database {
             hora_fechamento, 
             hora_abertura, 
             descricao, 
-            dias_funcionamento, 
             telefone,
             email, 
             senha, 
@@ -147,14 +146,13 @@ class Database {
             especialidade,
             id
             )
-            values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )',
+            values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ? )',
             [
                 $data['nome'],
                 $data['nomeRestaurante'],
                 $data['hora_fechamento'],
                 $data['hora_abertura'],
                 $data['descricao'],
-                $data['dias_funcionamento'],
                 $data['telefone'],
                 $data['email'],
                 $data['senha'],

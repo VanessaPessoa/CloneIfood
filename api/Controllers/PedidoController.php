@@ -16,7 +16,6 @@ class PedidoController extends Controller{
 
     public function createPedido(Request $request){
         $validatedData = $request->validate([
-            'hora_pedido' => 'required',
             'valor' => 'required',
             'fk_enderecocliente_id' => 'required',
         ]);

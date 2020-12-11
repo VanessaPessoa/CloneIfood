@@ -23,7 +23,6 @@ class RestauranteController extends Controller{
 
 
     public function create(Request $request){
-
         $validatedData = $request->validate([
             'nome' => 'required',
             'nomeRestaurante' => 'required',
@@ -36,7 +35,6 @@ class RestauranteController extends Controller{
             'estado' => 'required',
             'cidade' => 'required',
             'descricao' => 'required',
-            'dias_funcionamento' => 'required',
             'especialidade' => 'required',
             'imagem' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             
@@ -48,6 +46,7 @@ class RestauranteController extends Controller{
             $file->move($destinationPath, $profileImage);
             $insert['imagem'] = 'http://127.0.0.1:8000/'.$destinationPath.$profileImage;
         }
+
 
       
         $body = $request->all();
